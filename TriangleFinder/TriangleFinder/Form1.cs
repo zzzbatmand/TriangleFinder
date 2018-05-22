@@ -12,7 +12,7 @@ namespace TriangleFinder
 {
     public partial class TriangleFinder : Form
     {
-        //Test text
+        //Ikke en test
         private string lastChanged = "";
         List<TextBox> textList = new List<TextBox>();
         bool running = false;
