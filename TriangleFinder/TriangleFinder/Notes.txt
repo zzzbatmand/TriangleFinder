@@ -3,3 +3,4 @@ TODO:
 		Eks. b = sqr(c^2-a^2) OR b = c * cos(A)
 		So see if A is in order (4)
 	- Math.Acos * (180 / Math.PI) == cos^-1. Remember the 180 / pi, to convet it to degree.
+Ok..Nu
