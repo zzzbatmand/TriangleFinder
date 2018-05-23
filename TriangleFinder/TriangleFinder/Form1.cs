@@ -12,16 +12,17 @@ namespace TriangleFinder
 {
     public partial class TriangleFinder : Form
     {
-        //Ikke en test
+        // Some preset variables to keep track of the input order.
         private string lastChanged = "";
         List<TextBox> textList = new List<TextBox>();
-        bool running = false;
+        bool running = false;   // This is used, so it doesn't track inputs, when the calculations is running.
 
         #region Main_functions
         public TriangleFinder()
         {
+            // Initialize visual components.
             InitializeComponent();
-            //Create list of textboxes
+            // Create list of textboxes, used to itterate through the inputs.
             textList.Add(a1);
             textList.Add(b1);
             textList.Add(c1);
@@ -29,30 +30,30 @@ namespace TriangleFinder
             textList.Add(b2);
         }
 
+        // This function is triggered every time a textbox text is changed.
         private void global_TextChanged(object sender, EventArgs e)
         {
+            // Make sure the program isn't running.
             if (!running)
             {
-                TextBox triggerBox = (sender as TextBox); //Get the triggered textbox.
-                Console.WriteLine(triggerBox.Name); //Print name of the triggered textbox.
-                lastChanged = lastChanged.Replace(triggerBox.Name, ""); //Remove old item, if triggered before.
-                if (triggerBox.Text != "0" && triggerBox.Text != "") //If the triggered box isn't 0 or empty.
+                TextBox triggerBox = (sender as TextBox);               // Get the triggered textbox.
+                Console.WriteLine(triggerBox.Name);                     // Print name of the triggered textbox.
+                lastChanged = lastChanged.Replace(triggerBox.Name, ""); // Remove old item, if triggered before.
+                if (triggerBox.Text != "0" && triggerBox.Text != "")    // If the triggered box isn't 0 or empty.
                 {
-                    lastChanged += triggerBox.Name; //Add triggered box to list.
+                    lastChanged += triggerBox.Name;                     // Add triggered box to list.
                 }
-                Console.WriteLine(lastChanged); //Print changed order.
+                Console.WriteLine(lastChanged);                         // Print changed order.
             }
         }
 
+        // Function that checks the inputs for errors.
         private bool checkError()
         {
-            if (lastChanged.Length < 4) //If there isn't 2 edited items.
+            if (lastChanged.Length < 4) // If there isn't 2 edited items.
                 return true;
-            /*if (a1.Text.Length == 0) { a1.Text = "0"; }
-            if (b1.Text.Length == 0) { b1.Text = "0"; }
-            if (c1.Text.Length == 0) { c1.Text = "0"; }
-            if (a2.Text.Length == 0) { a2.Text = "0"; }
-            if (b2.Text.Length == 0) { b2.Text = "0"; }*/
+            
+            // Itterate through the text box'
             foreach (TextBox tb in textList)
             {
                 try
@@ -71,6 +72,7 @@ namespace TriangleFinder
             return false;
         }
 
+        // Button handlers
         private void resetButton_Click(object sender, EventArgs e)
         {
             resultBox.Text = "Find triangle info";
@@ -88,23 +90,25 @@ namespace TriangleFinder
         #endregion
 
         #region calculate_functions
+        // Function that prepars the inputs for calculations.
         private void prepareInputs()
         {
             foreach (TextBox tb in textList)
             {
-                if (tb.Text.Contains("."))  //Check if used a dot instead of necessary comma.
+                if (tb.Text.Contains("."))  // Check if used a dot instead of necessary comma.
                     tb.Text = tb.Text.Replace(".", ",");
-                if (tb.Text.Contains(" "))  //Check and remove spaces.
+                if (tb.Text.Contains(" "))  // Check and remove spaces.
                     tb.Text = tb.Text.Replace(" ", String.Empty);
-                if (tb.Text.Length == 0)    //Make sure a textbox isn't empty. (Pure cosmetic)
+                if (tb.Text.Length == 0)    // Make sure a textbox isn't empty. (Pure cosmetic)
                     tb.Text = "0";
             }
         }
 
+        // **?* This function can become opsolete, with some minor tweeking.
         private string createOrder()
         {
-            //Create order as int in what to calculate in.
-            //There are 5 inp. 2 is always used = 3.
+            // Create order as int in what to calculate in.
+            // There are 5 inp. 2 is always used = 3.
 
             string resultOrder = "";
 
@@ -158,11 +162,11 @@ namespace TriangleFinder
         {
             bool failed = false;
             string order = createOrder();
-            string outputOrder = "1"; //Necessary since converting to double and forst int if 0 will be removed.
-            double a, b, c, A, B; // Declare variables
-            a = b = c = A = B = 0; // Set variables to 0;
+            string outputOrder = "1";   // Necessary since converting to double and forst int if 0 will be removed.
+            double a, b, c, A, B;       // Declare variables
+            a = b = c = A = B = 0;      // Set variables to 0;
 
-            //for (int i = 0; i < order.ToString().Length; i++)
+            // **?* All textBox items in this loop, can possibly be replaced by "textList", check it later.
             foreach (char value in order) //Should set the neccesarry variables.
             {
                 switch (value)
@@ -193,16 +197,26 @@ namespace TriangleFinder
             if (!failed)
             {
                 // I take A and B first, to reduce possible calculation methods.
-                if (!order.Contains('A')) //If a isn't in the order, get that first.
+                if (!order.Contains('A')) // If A isn't in the order, get that first.
                 {
                     if (!order.Contains('B'))
                     {
-                        if (!order.Contains('a'))// Sets A, remember * (180 / pi) to convert to degree.
-                        { A = Math.Acos(b / c) * (180 / Math.PI); outputOrder += "0"; }
+                        // **?* These functuins, could be changed to an external function.
+                        if (!order.Contains('a')) // Sets A, remember * (180 / pi) to convert to degree.
+                        {
+                            A = Math.Acos(b / c) * (180 / Math.PI);
+                            outputOrder += "0";
+                        }
                         else if (!order.Contains('b'))
-                        { A = Math.Asin(a / c) * (180 / Math.PI); outputOrder += "1"; }
+                        {
+                            A = Math.Asin(a / c) * (180 / Math.PI);
+                            outputOrder += "1";
+                        }
                         else if (!order.Contains('c'))
-                        { A = Math.Atan(a / b) * (180 / Math.PI); outputOrder += "2"; }
+                        {
+                            A = Math.Atan(a / b) * (180 / Math.PI);
+                            outputOrder += "2";
+                        }
                     }
                     else
                     {
@@ -215,20 +229,33 @@ namespace TriangleFinder
                     B = 90 - A;
                     outputOrder += "4";
                 }
-                // Next i take the smaller ones here. (a-c)
+                // Next I take the smaller ones here. (a-c)
                 if (!order.Contains('a')) // Take 'a' first and work from there.
                 {
                     if (order.Contains('c'))
-                    { a = c * Math.Sin(A * Math.PI / 180); Console.WriteLine(a); outputOrder += "5"; }
+                    {
+                        a = c * Math.Sin(A * Math.PI / 180);
+                        Console.WriteLine(a);
+                        outputOrder += "5";
+                    }
                     else // This means (b)
-                    { a = b * Math.Tan(A * Math.PI / 180); outputOrder += "6"; }
+                    {
+                        a = b * Math.Tan(A * Math.PI / 180);
+                        outputOrder += "6";
+                    }
                 }
                 if (!order.Contains('b')) // If it doesn't have 'b', yada yada...
                 {
                     if (order.Contains('c'))
-                    { b = c * Math.Cos(A * Math.PI / 180); outputOrder += "7"; }
+                    {
+                        b = c * Math.Cos(A * Math.PI / 180);
+                        outputOrder += "7";
+                    }
                     else // This means (a)
-                    { b = a * Math.Tan(B * Math.PI / 180); outputOrder += "8"; }
+                    {
+                        b = a * Math.Tan(B * Math.PI / 180);
+                        outputOrder += "8";
+                    }
                 }
                 if (!order.Contains('c')) // Lastly we find 'c'
                 {
@@ -238,6 +265,7 @@ namespace TriangleFinder
 
 
                 // Reduce decimal digits to 3, but it only works with decimal and not doubles, so convert a bit.
+                // **?* Replace the variables with an array, to remove unnecesarry redundancies.
                 a = Convert.ToDouble(Math.Truncate(Convert.ToDecimal(a) * 1000m) / 1000m);
                 b = Convert.ToDouble(Math.Truncate(Convert.ToDecimal(b) * 1000m) / 1000m);
                 c = Convert.ToDouble(Math.Truncate(Convert.ToDecimal(c) * 1000m) / 1000m);
@@ -250,20 +278,23 @@ namespace TriangleFinder
             }
 
             // I'm just keeping the result as a variable, so it's not fixed.
+            // **?* This is what I needed above.
             double[] result = { a, b, c, A, B, Convert.ToDouble(outputOrder) };
-            return result; //First 2 outputs, then 3 unused inputs, for results.
+            return result; // First 2 outputs, then 3 unused inputs, for results.
         }
 
         private void printOutput(double[] results)
         {
             string output1 = ""; // Calc method using given values.
             string output2 = ""; // Calc methid using default letters.
-            string inputs = results[5].ToString().Substring(1); //Removes the base int used for keeping first 0.
-            Console.WriteLine("Inputs is : " + inputs);
+            string inputs = results[5].ToString().Substring(1); // Removes the base int used for keeping first 0.
+            Console.WriteLine("Inputs is : " + inputs);         // This is used for debugging. Prints the ordor, that is used below.
+
             // Get inputs and use ifstatements to print order
             // If not contain then show how to calc.
             foreach (char value in inputs)
             {
+                // **?* See if this can be prittier.
                 switch (value)
                 {
                     case ('0'):
@@ -317,6 +348,7 @@ namespace TriangleFinder
             }
         }
 
+        // Run the calculation process, as the name suggests.
         private void runCalculation()
         {
             running = true;
